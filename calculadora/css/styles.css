@@ -1,0 +1,11 @@
+.btn-group {
+    display: flex;
+}
+
+#titulo {
+    text-align: center;
+}
+
+#titulo, label, input::placeholder {
+    text-transform: capitalize;
+}
