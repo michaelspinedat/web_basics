@@ -11,6 +11,7 @@ const egresos = [
     new Egreso('ropa', 400)
 ];
 
+// Calcula la suma de todos los movimientos (egresos o ingresos).
 function calcularTotal (movimientos) {
     return movimientos.reduce( (sum, movimiento) => sum + movimiento.valor, 0);   
 }
@@ -36,6 +37,7 @@ function calcularFinanzas(ingresos, egresos) {
     };
 }
 
+// Muestra en la página los balances financieros: presupuesto, ingresos y egresos.
 function cargarBalance (finanzas) {
     document.getElementById('presupuesto').innerHTML = 
         aplicarFormatoMoneda(finanzas.presupuesto);
@@ -51,10 +53,28 @@ function cargarBalance (finanzas) {
         aplicarFormatoMoneda(finanzas.egresos);
 }
 
+function agregarFuncionalidadBtns () {
+    const btns = document.querySelectorAll('.elemento-eliminar--btn');
+    btns.forEach(btn => {
+        btn.addEventListener('click', e => {
+            const tipoMovimiento = e.currentTarget.dataset.tipo;
+            const id = e.currentTarget.dataset.id;
+            if (tipoMovimiento === 'ingreso') 
+                eliminarIngreso(id);
+            else 
+                eliminarEgreso(id);
+            mostrarFinanzas(ingresos, egresos);
+        });
+    });    
+}
 
+// Muestra en la página los balances financieros y los movimientos (ingresos y egresos). 
 function mostrarFinanzas(ingresos, egresos) {
     const finanzas = calcularFinanzas(ingresos, egresos);    
     cargarBalance(finanzas);
+    cargarIngresos(ingresos);
+    cargarEgresos(egresos);
+    agregarFuncionalidadBtns();
 }
 
 
@@ -71,8 +91,8 @@ function cargarIngreso (ingreso) {
         <div class="derecha limpiar-estilos">
             <div class="elemento-valor">+ ${aplicarFormatoMoneda(ingreso.valor)}</div>
             <div class="elemento-eliminar">
-                <button class="elemento-eliminar--btn">
-                    <ion-icon name="close-circle-outline" onclick='eliminarIngreso(${ingreso.id})'>                    
+                <button class="elemento-eliminar--btn" data-tipo="ingreso" data-id=${ingreso.id}>
+                    <ion-icon name="close-circle-outline">                    
                     </ion-icon>
                 </button>
             </div>
@@ -95,8 +115,8 @@ function cargarEgreso (egreso) {
             <div class="elemento-valor">- ${aplicarFormatoMoneda(egreso.valor)}</div>
             <div class="elemento_porcentaje">${aplicarFormatoPorcentaje(egreso.valor / calcularTotal(egresos))}</div>
             <div class="elemento-eliminar">
-                <button class="elemento-eliminar--btn">
-                    <ion-icon name="close-circle-outline" onclick='eliminarEgreso(${egreso.id})'>
+                <button class="elemento-eliminar--btn" data-tipo="egreso" data-id=${egreso.id}>
+                    <ion-icon name="close-circle-outline">
                     </ion-icon>
                 </button>
             </div>
@@ -106,6 +126,7 @@ function cargarEgreso (egreso) {
     `
 }
 
+// Muestra en la página todos los ingresos realizados.
 function cargarIngresos (ingresos) {
     let ingresosHtml = '';
     
@@ -115,6 +136,7 @@ function cargarIngresos (ingresos) {
     document.getElementById('lista-ingresos').innerHTML = ingresosHtml;
 }
 
+// Muestra en la página todos los egresos realizados.
 function cargarEgresos (egresos) {
     let egresosHtml = '';
     
@@ -127,6 +149,4 @@ function cargarEgresos (egresos) {
 
 window.addEventListener('load', () => {
     mostrarFinanzas(ingresos, egresos);
-    cargarIngresos(ingresos);
-    cargarEgresos(egresos);  
 });
