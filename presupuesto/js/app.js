@@ -147,6 +147,29 @@ function cargarEgresos (egresos) {
 }
 
 
+// agrega un movimiento (egreso o ingreso).
+function agregarMovimiento () {
+    let form = document.forms['form'];
+    let tipo = form['tipo'].value;
+    let descripcion = form['descripcion'].value;
+    let valor = form['valor'].value;
+
+    if (descripcion !== '' && valor !== '') {
+        let movimiento;
+        if (tipo === 'ingreso')
+            ingresos.push(new Ingreso(descripcion, +valor));
+        else
+            egresos.push(new Egreso(descripcion, +valor));
+        mostrarFinanzas(ingresos, egresos);        
+    }
+}
+
 window.addEventListener('load', () => {
     mostrarFinanzas(ingresos, egresos);
+});
+
+const btnAgregarMovimiento = document.querySelector('.agregar-btn');
+
+btnAgregarMovimiento.addEventListener('click', () => {
+    agregarMovimiento();
 });
